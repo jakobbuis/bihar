@@ -60,32 +60,3 @@ agent.get 'https://wwwsec.cs.uu.nl/students/cohorts.php?submit=show+me&PROGSEL=a
         file.write JSON.pretty_generate(records)
     end
 end
-
-# <tr>
-# 0<td><a href="/students/cohorts.php?STAT=gestopt&amp;EXAM=pord&amp;PROG=info">informatica</a></td>
-# 1<td><a href="/students/cohorts.php?STAT=gestopt&amp;EXAM=pord&amp;TYPE=doct">doctoral</a></td>
-# 2<td><a href="/students/cohorts.php?STAT=gestopt&amp;EXAM=pord&amp;OPLD=CS-classic">CS-classic</a></td>
-# 3<td><a href="/students/cohorts.php?STAT=gestopt&amp;EXAM=pord&amp;YEAR=2000">2000</a></td>
-# 4<td><font color="FUCHSIA"><b>prop</b> 2001-07-09</font></td>
-# </tr>
-
-
-
-# <TR>
-# 0<TD ROWSPAN=1><A HREF="/students/stud/0018953.html">Aarts, H.</A></TD>
-# 1<TD ROWSPAN=1>Harm</TD>
-# 2<TD><A HREF="/students/cohorts.php?STAT=gestopt&EXAM=pord&PROG=info">informatica</A></TD>
-# 3<TD><A HREF="/students/cohorts.php?STAT=gestopt&EXAM=pord&TYPE=doct">doctoral</A></TD>
-# 4<TD><A HREF="/students/cohorts.php?STAT=gestopt&EXAM=pord&OPLD=CS-classic">CS-classic</A></TD>
-# 5<TD><A HREF="/students/cohorts.php?STAT=gestopt&EXAM=pord&YEAR=2000">2000</A></TD>
-# 6<TD><FONT COLOR="FUCHSIA"><B>prop</B> 2001-08-24</FONT></TD>
-# </TR>
-
-# Naam= "Aarts, H."
-# Study= "informatica"
-# Level = "doctoral"
-# Classic_level = "CS-classic"
-# Start_year = "2000"
-# Prop_date = "2001-08-24" (dus min prop ervoor, als dat lukt)
-# vorige klopte niet
-# roepnaam is beetje onzinnig om te scrapen dus die als enige eruit
