@@ -21,6 +21,9 @@ agent.get 'https://wwwsec.cs.uu.nl/students/cohorts.php?submit=show+me&PROGSEL=a
 
     sub_entry = nil
 
+    # Keep count
+    total_entries_captured = 0
+
     # Convert table to JSON-output
     data_page.search('table').last.search('tr').each_with_index do |row, index|
         # Reject headers rows
@@ -51,6 +54,9 @@ agent.get 'https://wwwsec.cs.uu.nl/students/cohorts.php?submit=show+me&PROGSEL=a
             }
         end
 
+        # Keep tally
+        total_entries_captured += 1
+
         # Minor hack to correctly parse double rows (people with two attempts at studying)
         sub_entry = cells[0].text if cells[0]['rowspan'].to_i > 1
     end
@@ -59,4 +65,7 @@ agent.get 'https://wwwsec.cs.uu.nl/students/cohorts.php?submit=show+me&PROGSEL=a
     File.open('output.json', 'w') do |file|
         file.write JSON.pretty_generate(records)
     end
+
+    # Report success
+    puts "Captured #{total_entries_captured} entries into output.json"
 end
