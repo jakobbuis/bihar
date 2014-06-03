@@ -10,7 +10,7 @@ agent.get 'https://wwwsec.cs.uu.nl/students/cohorts.php?submit=show+me&PROGSEL=a
     login_page.forms.first.field_with(name: 'PSWD').value = $config[:password]
     data_page = login_page.forms.first.click_button
 
-    # Check whether the login was succesful; break if its not
+    # Check whether the login was succesful, terminating if it's not
     if data_page.body.include? 'bad password' or data_page.body.include? 'failed: user'
         puts 'Login failed: incorrect username or password'
         exit 1
