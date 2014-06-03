@@ -1,6 +1,6 @@
 # Bihar
 
-Small scraper tool using mechanize for a Business Intelligence project. Collects to a specific page on the [cs.uu.nl](http://www.cs.uu.nl/) website and collects some data about people who've left (not completed) any programme. 
+Small scraper tool using mechanize for a Business Intelligence project. Connects to a specific page on the [cs.uu.nl](http://www.cs.uu.nl/) website and collects some data from a table about people who've left (not completed) any programme. 
 
 ## Installation
 Requires ruby and bundler. Copy config.example.rb to config.rb and enter your UU (solis) credentials. 
