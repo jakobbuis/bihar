@@ -1,17 +1,18 @@
 # Setup
 require 'mechanize'
 require 'json'
+require 'digest/sha1'
 require './config.rb'
 agent = Mechanize.new
 
-agent.get 'https://wwwsec.cs.uu.nl/students/cohorts.php?submit=show+me&PROGSEL=all%7Call%7Call&YEAR=&STAT=gestopt&EXAM=pord' do |login_page|
+agent.get 'https://wwwsec.cs.uu.nl/students/cohorts.php?PROGSEL=all|all|all&STAT=gestopt' do |login_page|
     # Login to the website
     login_page.forms.first.field_with(name: 'SLID').value = $config[:user]
     login_page.forms.first.field_with(name: 'PSWD').value = $config[:password]
     data_page = login_page.forms.first.click_button
 
     # Check whether the login was succesful, terminating if it's not
-    if data_page.body.include? 'bad password' or data_page.body.include? 'failed: user'
+    unless data_page.body.include? 'logged in as'
         puts 'Login failed: incorrect username or password'
         exit 1
     end
@@ -19,46 +20,48 @@ agent.get 'https://wwwsec.cs.uu.nl/students/cohorts.php?submit=show+me&PROGSEL=a
     # Store the records we build
     records = []
 
-    sub_entry = nil
+    # Record the current name we're dealing with
+    current_name = nil
 
     # Keep count
     total_entries_captured = 0
 
-    # Convert table to JSON-output
-    data_page.search('table').last.search('tr').each_with_index do |row, index|
+    # Parse table
+    data_page.search('table').last.search('tr').each do |row|
         # Reject headers rows
         next if row.search('th').length > 0
 
         # Read all cells
         cells = row.search('td')
 
+        # Update the current name if we enter a new person
+        current_name = cells[0].text if cells.length > 6
+
         # Build data record we need
-        unless sub_entry.nil?
+        if cells.length > 6
             records << {
-                name: sub_entry,
-                study: cells[0].text,
-                level: cells[1].text,
-                classic_level: cells[2].text,
-                start_year: cells[3].text,
-                prop_date: cells[4].text[5..-1]
+                id: Digest::SHA1.hexdigest(current_name),   # Hash name for privacy
+                study_name: cells[2].text,
+                program_code: cells[4].text,
+                start_year: cells[5].text,
+                end_year: cells[6].text[5..8],
+                propedeuse: cells[6].text[0..3] == 'prop',
+                level: cells[3].text,
             }
-            sub_entry = nil
         else
             records << {
-                name: cells[0].text,
-                study: cells[2].text,
-                level: cells[3].text,
-                classic_level: cells[4].text,
-                start_year: cells[5].text,
-                prop_date: cells[6].text[5..-1]
+                id: Digest::SHA1.hexdigest(current_name),   # Hash name for privacy
+                study_name: cells[0].text,
+                program_code: cells[2].text,
+                start_year: cells[3].text,
+                end_year: cells[4].text[5..8],
+                propedeuse: cells[4].text[0..3] == 'prop',
+                level: cells[1].text,
             }
         end
 
         # Keep tally
         total_entries_captured += 1
-
-        # Minor hack to correctly parse double rows (people with two attempts at studying)
-        sub_entry = cells[0].text if cells[0]['rowspan'].to_i > 1
     end
 
     # Write to file
