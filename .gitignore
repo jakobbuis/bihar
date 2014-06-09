@@ -1,3 +1,2 @@
 config.rb
-output_completed.json
-output_failures.json
+output*.json
